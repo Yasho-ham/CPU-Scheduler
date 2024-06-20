@@ -308,7 +308,7 @@ vector< vector<float>> RoundRobin(vector< pair<int, pair<float, float>>> process
 ```
 ## Predicted Algorithm
 
-The predicted scheduling algorithm is determined based on the standard deviation and average of the burst times and arrival times of the processes:
+The algorithms are being predicted after calculating important statistical values like mean, variance and standard deviation from the values of arrival times and burst times given in `input.txt`. Based on comparison between these indicators, we are predicting the algorithm as follows :
 
 - If both the standard deviation of burst times (SDBT) and arrival times (SDAT) are less than their respective averages, the SJF algorithm is predicted.
 - If SDBT is less than the average burst time, the SRTF algorithm is predicted.
@@ -340,12 +340,61 @@ Make sure the input file `input.txt` is in the same directory as the executable.
     ```
   - Example:
     ```
-    1 0 5
-    2 2 3
-    3 4 2
+    1 15 8
+    2 7 9
+    3 7 2
+    4 11 5
+    5 18 5
     ```
 
 - **Output File (`output.txt`)**:
   - The output file will contain the results of the scheduling algorithms including Gantt charts and average waiting and turn-around times.
+  - Example:
+```
+Predicted Algorithm : SJF or SRTF
+
+FCFS :
+|   P2   |   P3   |   P4   |   P1   |   P5   |
+
+7       16       18       23       31       36
+
+Average Waiting Time : 7.4, Average Turn-around Time : 13.2
+
+
+
+SJF :
+|   P3   |   P2   |   P4   |   P5   |   P1   |
+
+7       9       18       23       28       36
+
+Average Waiting Time : 5.4, Average Turn-around Time : 11.2
+
+
+
+LJF :
+|   P2   |   P1   |   P4   |   P5   |   P3   |
+
+7       16       24       29       34       36
+
+Average Waiting Time : 10.4, Average Turn-around Time : 16.2
+
+
+
+SRTF :
+|   P3   |   P2   |   P4   |   P2   |   P5   |   P1   |
+
+7       9       11       16       23       28       36
+
+Average Waiting Time : 5, Average Turn-around Time : 10.8
+
+
+
+RoundRobin (quantum = 2) :
+|   P2   |   P3   |   P2   |   P4   |   P2   |   P1   |   P4   |   P2   |   P5   |   P1   |   P4   |   P2   |   P5   |   P1   |   P5   |   P1   |
+
+7       9       11       13       15       17       19       21       23       25       27       28       29       31       33       34       36
+
+Average Waiting Time : 10.2, Average Turn-around Time : 16
+```    
 
 By following the instructions and understanding the provided details, one can effectively utilize and analyze various CPU scheduling algorithms. This repository serves as a comprehensive guide and implementation for these algorithms.
