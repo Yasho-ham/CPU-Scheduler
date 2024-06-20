@@ -385,9 +385,9 @@ The algorithms are being predicted after calculating important statistical value
 
 Certainly! Here's how you can compile and execute a C++ program named `cpu_scheduling` on Windows, macOS, and Linux:
 
-### Compilation and Execution
+## Compilation and Execution
 
-#### For Windows
+### For Windows
 
 1. **Compilation**:
    Open Command Prompt and run:
@@ -402,7 +402,7 @@ Certainly! Here's how you can compile and execute a C++ program named `cpu_sched
 
    Make sure the input file `input.txt` is in the same directory as `cpu_scheduling.exe`.
 
-#### For macOS and Linux
+### For macOS and Linux
 
 1. **Compilation**:
    Open Terminal and run:
