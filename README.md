@@ -383,11 +383,29 @@ The algorithms are being predicted after calculating important statistical value
 - If more than half of the processes have burst times greater than the average burst time, the LJF algorithm is predicted.
 - Otherwise, the Round Robin algorithm is predicted.
 
-## Compilation and Execution
+Certainly! Here's how you can compile and execute a C++ program named `cpu_scheduling` on Windows, macOS, and Linux:
 
-To compile and execute the program, follow these steps:
+### Compilation and Execution
+
+#### For Windows
 
 1. **Compilation**:
+   Open Command Prompt and run:
+   ```bash
+   g++ -o cpu_scheduling cpu_scheduling.cpp
+   ```
+
+2. **Execution**:
+   ```bash
+   cpu_scheduling.exe
+   ```
+
+   Make sure the input file `input.txt` is in the same directory as `cpu_scheduling.exe`.
+
+#### For macOS and Linux
+
+1. **Compilation**:
+   Open Terminal and run:
    ```bash
    g++ -o cpu_scheduling cpu_scheduling.cpp
    ```
@@ -397,7 +415,7 @@ To compile and execute the program, follow these steps:
    ./cpu_scheduling
    ```
 
-Make sure the input file `input.txt` is in the same directory as the executable.
+   Make sure the input file `input.txt` is in the same directory as the executable `cpu_scheduling`.
 
 ## Input and Output Files
 
