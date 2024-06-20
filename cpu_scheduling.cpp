@@ -28,17 +28,15 @@ bool DecBurstTime(pair<int, pair<float, float>>& a, pair<int, pair<float, float>
 }
 
 void GanttChart(vector<vector<float>> exe, ofstream& outputFile){
-    // exec.push_back({{pID, RunTime, usedTime, waitTime, RunTime+usedTime}});
-
     int n = exe.size();
     for(int i=0; i<n; i++){
       if(i==0){
         outputFile << "|   P" << exe[i][0] << "   ";
       } else if(i>0 && exe[i][0]!=exe[i-1][0]){
         if(exe[i][1]!=exe[i-1][4]){
-        outputFile << "|/////////|   P" << exe[i][0] << "   ";
+            outputFile << "|********|   P" << exe[i][0] << "   ";
         } else {
-        outputFile << "|   P" << exe[i][0] << "   ";
+            outputFile << "|   P" << exe[i][0] << "   ";
         }
       }
     }
@@ -47,12 +45,12 @@ void GanttChart(vector<vector<float>> exe, ofstream& outputFile){
 
     for(int i=0; i<n; i++){
       if(i==0){
-        outputFile << exe[i][1] << "        ";
+        outputFile << exe[i][1] << "       ";
       } else if(i>0 && exe[i][0]!=exe[i-1][0]){
         if(exe[i][1]!=exe[i-1][4]){
-            outputFile << exe[i-1][4] << "        " << exe[i][1] << "        ";
+            outputFile << exe[i-1][4] << "       " << exe[i][1] << "       ";
         } else {
-            outputFile << exe[i][1] << "        ";
+            outputFile << exe[i][1] << "       ";
         }
       }
       if(i==n-1){
@@ -64,7 +62,6 @@ void GanttChart(vector<vector<float>> exe, ofstream& outputFile){
 
 void AvgValues(vector<vector<float>> exe, ofstream& outputFile){
     int n = exe.size();
-    // run.push_back({pID, RunTime, origburstTime, origarrTime, TATime});
     float avgWT = 0, avgTAT = 0;
     for(int i=0; i<n; i++){
       avgWT += (exe[i][4] - exe[i][2] - exe[i][3]);
@@ -79,11 +76,6 @@ void AvgValues(vector<vector<float>> exe, ofstream& outputFile){
 vector< vector<float>> FCFS(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
     vector< pair<int, pair<float, float>>> original(processes.begin(), processes.end());
     sort(processes.begin(), processes.end(), IncArrTime);
-    cout << "{ ";
-    for(auto &p : processes){
-        cout << "(" << p.first << ", (" << p.second.first << ", " << p.second.second << ")), ";
-    }
-    cout << "}\n";
     vector< vector<float>> run;
     float RunTime = 0;
 
@@ -111,7 +103,7 @@ vector< vector<float>> SJF(vector< pair<int, pair<float, float>>> processes, ofs
     vector< pair<int, pair<float, float>>> original(processes.begin(), processes.end());
     sort(processes.begin(), processes.end(), IncArrTime);
     
-    set <pair<float, pair<float, int>>> ReadyQueue;
+    multiset <pair<float, pair<float, int>>> ReadyQueue;
     vector< vector<float>> run;
 
     int idx = 0;
@@ -155,33 +147,33 @@ struct DecSet {
     }
 };
 
-vector< vector<float>> LJF(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
+vector< vector<float>> LJF(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile) {
     vector< pair<int, pair<float, float>>> original(processes.begin(), processes.end());
     sort(processes.begin(), processes.end(), IncArrTime);
-    
-    set < pair<float, pair<float, int>>, DecSet> ReadyQueue;
+
+    multiset< pair<float, pair<float, int>>, DecSet> ReadyQueue;
     vector< vector<float>> run;
 
     int idx = 0;
     float RunTime = 0;
     int totalProcesses = processes.size();
-    
-    while(idx < totalProcesses || !ReadyQueue.empty()){
 
-        while(idx < totalProcesses && processes[idx].second.first <= RunTime){
+    while (idx < totalProcesses || !ReadyQueue.empty()) {
+        while (idx < totalProcesses && processes[idx].second.first <= RunTime) {
             ReadyQueue.insert({processes[idx].second.second, {processes[idx].second.first, processes[idx].first}});
             idx++;
         }
 
-        if(ReadyQueue.empty()){
-            RunTime = max(processes[idx].second.first, RunTime);
+        if (ReadyQueue.empty()) {
+            if (idx < totalProcesses) {
+                RunTime = processes[idx].second.first;
+            }
             continue;
         }
 
-        pair<float, pair<float, int>> RunningProcess = *ReadyQueue.begin();
+        auto RunningProcess = *ReadyQueue.begin();
         ReadyQueue.erase(ReadyQueue.begin());
 
-        
         float pID = RunningProcess.second.second;
         float arrTime = RunningProcess.second.first;
         float burstTime = RunningProcess.first;
@@ -189,34 +181,42 @@ vector< vector<float>> LJF(vector< pair<int, pair<float, float>>> processes, ofs
         float waitTime = max(0.0f, RunTime - arrTime);
         float TATime = RunTime + burstTime;
 
-        run.push_back({pID, RunTime, original[pID-1].second.second, original[pID-1].second.first, TATime});
+        run.push_back({pID, RunTime, original[pID - 1].second.second, original[pID - 1].second.first, TATime});
         RunTime += burstTime;
     }
+
     outputFile << "LJF :\n";
     GanttChart(run, outputFile);
     return run;
 }
 
+
 vector< vector<float>> SRTF(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
     vector< pair<int, pair<float, float>>> original(processes.begin(), processes.end());
     sort(processes.begin(), processes.end(), IncArrTime);
     
-    set < pair<float, pair<float, int>>> ReadyQueue;
+    multiset < pair<float, pair<float, int>>> ReadyQueue;
     vector< vector<float>> run, exec;
 
     int idx = 0, n = processes.size();
     float RunTime = 0;
     
     ReadyQueue.insert({processes[idx].second.second, {processes[idx].second.first, processes[idx].first}});
+    RunTime = max(RunTime, processes[idx].second.first);
     idx++;
 
     while(!ReadyQueue.empty() || idx < n){
+        while(idx < n && processes[idx].second.first <= RunTime){
+            ReadyQueue.insert({processes[idx].second.second, {processes[idx].second.first, processes[idx].first}});
+            idx++;
+        }
+
         if (ReadyQueue.empty()) {
             RunTime = processes[idx].second.first;
             ReadyQueue.insert({processes[idx].second.second, {processes[idx].second.first, processes[idx].first}});
             idx++;
         }
-        
+
         pair<float, pair<float, int>> RunningProcess = *ReadyQueue.begin();
         ReadyQueue.erase(ReadyQueue.begin());
 
@@ -248,7 +248,7 @@ vector< vector<float>> SRTF(vector< pair<int, pair<float, float>>> processes, of
     return run;
 }
 
-vector< vector<float>> RoundRobin(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile, float avgBurstTime){
+vector< vector<float>> RoundRobin(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
     vector< pair<int, pair<float, float>>> original(processes.begin(), processes.end());
     sort(processes.begin(), processes.end(), IncArrTime);
     
@@ -259,9 +259,15 @@ vector< vector<float>> RoundRobin(vector< pair<int, pair<float, float>>> process
     float RunTime = 0, quantum = 2;
     
     ReadyQueue.push({processes[idx].second.second, {processes[idx].second.first, processes[idx].first}});
+    RunTime = max(RunTime, processes[idx].second.first);
     idx++;
 
     while(!ReadyQueue.empty() || idx < n){
+        while(idx < n && processes[idx].second.first <= RunTime){
+            ReadyQueue.push({processes[idx].second.second, {processes[idx].second.first, processes[idx].first}});
+            idx++;
+        }
+        
         if (ReadyQueue.empty()) {
             RunTime = processes[idx].second.first;
             ReadyQueue.push({processes[idx].second.second, {processes[idx].second.first, processes[idx].first}});
@@ -296,7 +302,7 @@ vector< vector<float>> RoundRobin(vector< pair<int, pair<float, float>>> process
             ReadyQueue.push({remTime, {arrTime, pID}});
         }
     }
-    outputFile << "RoundRobin :\n";
+    outputFile << "RoundRobin (quantum = 2) :\n";
     GanttChart(exec, outputFile);
     return run;
 }
@@ -332,13 +338,16 @@ int main(){
         return 0;
     }
 
+    map <float, int> countBurstTime;
+
     for(auto&p : processes){
         cout << "Process ID : " << p.first << ", Arrival Time : " <<
         p.second.first << ", Burst Time : " << p.second.second << "\n";
+        countBurstTime[p.second.second]++;
         sumArrivalTime += p.second.first;
         sumBurstTime += p.second.second;
     }
-    
+
     int totalProcesses = processes.size();
     avgArrivalTime = sumArrivalTime/totalProcesses;
     avgBurstTime = sumBurstTime/totalProcesses;
@@ -361,9 +370,8 @@ int main(){
         long_burst_count++;
       }
     }
-
     if (SDBT < avgBurstTime && SDAT < avgArrivalTime) {
-        outputFile << "Predicted Algorithm : SJF\n\n";
+        outputFile << "Predicted Algorithm : SJF or SRTF\n\n";
     } else if (SDBT < avgBurstTime) {
         outputFile << "Predicted Algorithm : SRTF\n\n";
     } else if (long_burst_count > n / 2) {
@@ -380,6 +388,6 @@ int main(){
     AvgValues(out_ljf, outputFile);
     vector<vector<float>> out_srtf = SRTF(processes, outputFile);
     AvgValues(out_srtf, outputFile);
-    vector<vector<float>> out_rr = RoundRobin(processes, outputFile, avgBurstTime);
+    vector<vector<float>> out_rr = RoundRobin(processes, outputFile);
     AvgValues(out_rr, outputFile);
 }
