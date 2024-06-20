@@ -33,6 +33,7 @@ The FCFS algorithm schedules processes in the order they arrive in the ready que
 - **Execution**: Each process runs to completion before the next process starts.
 - **Output**: The Gantt chart and average waiting and turn-around times are calculated.
 - **Explanation of Code**: Here, the code is implemented using a vector containing all the values defining a process and we sort the vector in increasing order of arrival times. Then, each and every processes comes one after the another and gets executed.
+
   ```
   vector<vector<float>> FCFS(vector<pair<int, pair<float, float>>> processes, ofstream& outputFile) {
       vector<pair<int, pair<float, float>>> original(processes.begin(), processes.end());
@@ -70,6 +71,7 @@ The SJF algorithm selects the process with the smallest burst time from the read
 - **Execution**: The selected process runs to completion.
 - **Output**: The Gantt chart and average waiting and turn-around times are calculated.
 - **Code Explanation**: Here, a multiset is being used so that the sorting of processes, according to their burst times, comes handy and since this algorithm is non-preemptive, we are checking for new values at the completion of the process only and not in between.
+
 ```
 vector< vector<float>> SJF(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
     vector< pair<int, pair<float, float>>> original(processes.begin(), processes.end());
@@ -121,6 +123,7 @@ The LJF algorithm selects the process with the longest burst time from the ready
 - **Execution**: The selected process runs to completion.
 - **Output**: The Gantt chart and average waiting and turn-around times are calculated.
 - **Code Explanation**: This implementation is also very similar to that of SJF. The only difference is that, a `struct` is introduced to deal with the decreasing order of burst times.
+
 ```
 struct DecSet {
     bool operator()(const pair<float, pair<float, int>>& a, const pair<float, pair<float, int>>& b) const {
@@ -180,6 +183,7 @@ The SRTF algorithm is a preemptive version of SJF. It selects the process with t
 - **Execution**: A running process can be preempted if a new process with a shorter burst time arrives.
 - **Output**: The Gantt chart and average waiting and turn-around times are calculated.
 - **Code Explanation**: As it is already stated that this algorithm is just preemptive version of SJF. So, here at the end of every `second`, the code checks for new processes (if any) and updates the multiset in order to make the task with least burst time available to CPU.
+
 ```
 vector< vector<float>> SRTF(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
     vector< pair<int, pair<float, float>>> original(processes.begin(), processes.end());
@@ -246,6 +250,7 @@ The RR algorithm assigns a fixed time quantum for each process and cycles throug
 - **Execution**: Each process runs for a maximum of the time quantum before the next process is selected.
 - **Output**: The Gantt chart and average waiting and turn-around times are calculated.
 - **Code Explanation**: The code of round robin algorithm has a quantum value of `2s` and it checks for new processes coming before or at the time of preemption (or complemetion), whichever is applicable, then moves the current process `(if burst time remains > 0)` to the end of the ready queue.
+
 ```
 vector< vector<float>> RoundRobin(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
     vector< pair<int, pair<float, float>>> original(processes.begin(), processes.end());
