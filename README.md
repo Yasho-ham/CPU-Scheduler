@@ -298,7 +298,7 @@ vector< vector<float>> SRTF(vector< pair<int, pair<float, float>>> processes, of
     return run;
 }
 ```
-### Round Robin
+### Round Robin (RR)
 
 Round Robin is a CPU scheduling algorithm where each process is cyclically assigned a fixed time slot. It is the preemptive version of the First Come First Serve CPU Scheduling algorithm and generally focuses on time-sharing techniques.
 
