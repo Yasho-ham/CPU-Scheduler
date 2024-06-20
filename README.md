@@ -3,16 +3,27 @@
 This repository contains implementations of various CPU scheduling algorithms. Each algorithm has been implemented in C++ and the performance metrics such as average waiting time and average turn-around time are calculated and displayed. This document explains each scheduling algorithm in detail and outlines how the predicted algorithm is determined based on the input processes.
 
 ## Table of Contents
-1. [Algorithms Implemented](#algorithms-implemented)
-2. [Details of Each Algorithm](#details-of-each-algorithm)
+1. [Basic Terminologies](#basic-terminologies)
+2. [Algorithms Implemented](#algorithms-implemented)
+3. [Details of Each Algorithm](#details-of-each-algorithm)
    - [First-Come, First-Served (FCFS)](#first-come-first-served-fcfs)
    - [Shortest Job First (SJF)](#shortest-job-first-sjf)
    - [Longest Job First (LJF)](#longest-job-first-ljf)
    - [Shortest Remaining Time First (SRTF)](#shortest-remaining-time-first-srtf)
    - [Round Robin (RR)](#round-robin-rr)
-3. [Predicted Algorithm](#predicted-algorithm)
-4. [Compilation and Execution](#compilation-and-execution)
-5. [Input and Output Files](#input-and-output-files)
+4. [Predicted Algorithm](#predicted-algorithm)
+5. [Compilation and Execution](#compilation-and-execution)
+6. [Input and Output Files](#input-and-output-files)
+
+## Basic Terminologies
+
+- **Arrival Time**: The time at which the process arrives in the ready queue.
+- **Completion Time**: The time at which the process completes its execution.
+- **Burst Time**: The time required by a process for CPU execution.
+- **Turn Around Time (TAT)**: The time difference between the completion time and the arrival time.
+  - **Formula**: `Turn Around Time = Completion Time – Arrival Time`
+- **Waiting Time (WT)**: The time difference between the turn-around time and the burst time.
+  - **Formula**: `Waiting Time = Turn Around Time – Burst Time`
 
 ## Algorithms Implemented
 
@@ -27,11 +38,23 @@ The following CPU scheduling algorithms have been implemented:
 
 ### First-Come, First-Served (FCFS)
 
-The FCFS algorithm schedules processes in the order they arrive in the ready queue. It is a non-preemptive scheduling algorithm.
+FCFS considered to be the simplest of all operating system scheduling algorithms. First come first serve scheduling algorithm states that the process that requests the CPU first is allocated the CPU first and is implemented by using FIFO queue.
 
-- **Process Selection**: The process with the earliest arrival time is selected.
-- **Execution**: Each process runs to completion before the next process starts.
-- **Output**: The Gantt chart and average waiting and turn-around times are calculated.
+#### Characteristics of FCFS:
+- FCFS supports non-preemptive and preemptive CPU scheduling algorithms.
+- Tasks are always executed on a First-come, First-serve concept.
+- FCFS is easy to implement and use.
+- This algorithm is not much efficient in performance, and the wait time is quite high.
+
+#### Advantages of FCFS:
+- Easy to implement
+- First come, first serve method
+
+#### Disadvantages of FCFS:
+- FCFS suffers from Convoy effect.
+- The average waiting time is much higher than the other algorithms.
+- FCFS is very simple and easy to implement and hence not much efficient.
+
 - **Explanation of Code**: Here, the code is implemented using a vector containing all the values defining a process and we sort the vector in increasing order of arrival times. Then, each and every processes comes one after the another and gets executed.
 
   ```
