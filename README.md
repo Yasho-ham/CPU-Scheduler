@@ -48,6 +48,34 @@ The LJF algorithm selects the process with the longest burst time from the ready
 - **Process Selection**: The process with the longest burst time is selected next.
 - **Execution**: The selected process runs to completion.
 - **Output**: The Gantt chart and average waiting and turn-around times are calculated.
+- **Explanation of Code**:
+  ```
+  vector< vector<float>> FCFS(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
+    vector< pair<int, pair<float, float>>> original(processes.begin(), processes.end());
+    sort(processes.begin(), processes.end(), IncArrTime);
+    vector< vector<float>> run;
+    float RunTime = 0;
+
+    for(auto& p : processes){
+        float pID = p.first;
+        float arrTime = p.second.first;
+        float burstTime = p.second.second;
+
+        if(RunTime<arrTime){
+            RunTime = arrTime;
+        }
+
+        float waitTime = max(0.0f, RunTime - arrTime);
+        float TATime = RunTime + burstTime;
+
+        run.push_back({pID, RunTime, original[pID-1].second.second, original[pID-1].second.first, TATime});
+        RunTime = TATime;
+    }
+    outputFile << "FCFS :\n";
+    GanttChart(run, outputFile);
+    return run;
+}
+``
 
 ### Shortest Remaining Time First (SRTF)
 
