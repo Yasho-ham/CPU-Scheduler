@@ -421,6 +421,7 @@ Certainly! Here's how you can compile and execute a C++ program named `cpu_sched
 
 - **Input File (`input.txt`)**:
   - The input file should contain process information in the following format:
+  - The process ID must start from 1 and move forward like 2, 3, 4 and so on.
     ```
     ProcessID ArrivalTime BurstTime
     ```
