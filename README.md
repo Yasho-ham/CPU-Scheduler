@@ -38,7 +38,7 @@ The following CPU scheduling algorithms have been implemented:
 
 ### First-Come, First-Served (FCFS)
 
-FCFS considered to be the simplest of all operating system scheduling algorithms. First come first serve scheduling algorithm states that the process that requests the CPU first is allocated the CPU first and is implemented by using FIFO queue.
+FCFS is considered to be the simplest of all operating system scheduling algorithms. First come first serve scheduling algorithm states that the process that requests the CPU first is allocated the CPU first and is implemented by using FIFO queue.
 
 #### Characteristics of FCFS:
 - FCFS supports non-preemptive and preemptive CPU scheduling algorithms.
@@ -55,45 +55,57 @@ FCFS considered to be the simplest of all operating system scheduling algorithms
 - The average waiting time is much higher than the other algorithms.
 - FCFS is very simple and easy to implement and hence not much efficient.
 
-- **Explanation of Code**: Here, the code is implemented using a vector containing all the values defining a process and we sort the vector in increasing order of arrival times. Then, each and every processes comes one after the another and gets executed.
+#### Explanation of Code:
+Here, the code is implemented using a vector containing all the values defining a process and we sort the vector in increasing order of arrival times. Then, each and every processes comes one after the another and gets executed.
 
-  ```
-  vector<vector<float>> FCFS(vector<pair<int, pair<float, float>>> processes, ofstream& outputFile) {
-      vector<pair<int, pair<float, float>>> original(processes.begin(), processes.end());
-      sort(processes.begin(), processes.end(), IncArrTime);
-      vector<vector<float>> run;
-      float RunTime = 0;
+```
+vector<vector<float>> FCFS(vector<pair<int, pair<float, float>>> processes, ofstream& outputFile) {
+   vector<pair<int, pair<float, float>>> original(processes.begin(), processes.end());
+   sort(processes.begin(), processes.end(), IncArrTime);
+   vector<vector<float>> run;
+   float RunTime = 0;
 
-      for (auto& p : processes) {
-          float pID = p.first;
-          float arrTime = p.second.first;
-          float burstTime = p.second.second;
+   for (auto& p : processes) {
+       float pID = p.first;
+       float arrTime = p.second.first;
+       float burstTime = p.second.second;
 
-          if (RunTime < arrTime) {
-              RunTime = arrTime;
-          }
+       if (RunTime < arrTime) {
+           RunTime = arrTime;
+       }
 
-          float waitTime = max(0.0f, RunTime - arrTime);
-          float TATime = RunTime + burstTime;
+       float waitTime = max(0.0f, RunTime - arrTime);
+       float TATime = RunTime + burstTime;
 
-          run.push_back({pID, RunTime, original[pID - 1].second.second, original[pID - 1].second.first, TATime});
-          RunTime = TATime;
-      }
+       run.push_back({pID, RunTime, original[pID - 1].second.second, original[pID - 1].second.first, TATime});
+       RunTime = TATime;
+   }
 
-      outputFile << "FCFS :\n";
-      GanttChart(run, outputFile);
-      return run;
-  }
-
+   outputFile << "FCFS :\n";
+   GanttChart(run, outputFile);
+   return run;
+}
+```
 
 ### Shortest Job First (SJF)
 
-The SJF algorithm selects the process with the smallest burst time from the ready queue. It is a non-preemptive scheduling algorithm.
+Shortest Job First (SJF) is a scheduling process that selects the waiting process with the smallest execution time to execute next. This scheduling method may or may not be preemptive and significantly reduces the average waiting time for other processes waiting to be executed. The full form of SJF is Shortest Job First.
 
-- **Process Selection**: The process with the shortest burst time is selected next.
-- **Execution**: The selected process runs to completion.
-- **Output**: The Gantt chart and average waiting and turn-around times are calculated.
-- **Code Explanation**: Here, a multiset is being used so that the sorting of processes, according to their burst times, comes handy and since this algorithm is non-preemptive, we are checking for new values at the completion of the process only and not in between.
+#### Characteristics of SJF:
+- Shortest Job First has the advantage of having a minimum average waiting time among all operating system scheduling algorithms.
+- It is associated with each task as a unit of time to complete.
+- It may cause starvation if shorter processes keep coming. This problem can be solved using the concept of ageing.
+
+#### Advantages of Shortest Job First:
+- As SJF reduces the average waiting time, it is better than the First Come First Serve scheduling algorithm.
+- SJF is generally used for long-term scheduling.
+
+#### Disadvantages of SJF:
+- One of the demerits SJF has is starvation.
+- Many times it becomes complicated to predict the length of the upcoming CPU request.
+
+#### Explanation of Code:
+Here, a multiset is being used so that the sorting of processes, according to their burst times, comes handy and since this algorithm is non-preemptive, we are checking for new values at the completion of the process only and not in between.
 
 ```
 vector< vector<float>> SJF(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
@@ -140,12 +152,23 @@ vector< vector<float>> SJF(vector< pair<int, pair<float, float>>> processes, ofs
 
 ### Longest Job First (LJF)
 
-The LJF algorithm selects the process with the longest burst time from the ready queue. It is a non-preemptive scheduling algorithm.
+Longest Job First (LJF) scheduling process is the opposite of Shortest Job First (SJF). This algorithm prioritizes the process with the largest burst time, meaning the longest job is processed first. LJF is non-preemptive in nature.
 
-- **Process Selection**: The process with the longest burst time is selected next.
-- **Execution**: The selected process runs to completion.
-- **Output**: The Gantt chart and average waiting and turn-around times are calculated.
-- **Code Explanation**: This implementation is also very similar to that of SJF. The only difference is that, a `struct` is introduced to deal with the decreasing order of burst times.
+#### Characteristics of LJF:
+- Among all the processes waiting in a waiting queue, the CPU is always assigned to the process having the largest burst time.
+- If two processes have the same burst time, then the tie is broken using FCFS (First Come First Serve) i.e., the process that arrived first is processed first.
+- LJF CPU Scheduling can be of both preemptive and non-preemptive types.
+
+#### Advantages of LJF:
+- No other task can be scheduled until the longest job or process executes completely.
+- All the jobs or processes finish at approximately the same time.
+
+#### Disadvantages of LJF:
+- Generally, the LJF algorithm gives a very high average waiting time and average turnaround time for a given set of processes.
+- This may lead to the convoy effect, where short processes wait for a long process to finish.
+
+#### Explanation of Code:
+This implementation is also very similar to that of SJF. The only difference is that, a `struct` is introduced to deal with the decreasing order of burst times.
 
 ```
 struct DecSet {
@@ -200,12 +223,22 @@ vector< vector<float>> LJF(vector< pair<int, pair<float, float>>> processes, ofs
 
 ### Shortest Remaining Time First (SRTF)
 
-The SRTF algorithm is a preemptive version of SJF. It selects the process with the shortest remaining burst time.
+Shortest Remaining Time First (SRTF) is the preemptive version of Shortest Job First (SJF), where the processor is allocated to the job closest to completion. In SRTF, the process with the smallest amount of time remaining until completion is selected to execute.
 
-- **Process Selection**: The process with the shortest remaining burst time is selected.
-- **Execution**: A running process can be preempted if a new process with a shorter burst time arrives.
-- **Output**: The Gantt chart and average waiting and turn-around times are calculated.
-- **Code Explanation**: As it is already stated that this algorithm is just preemptive version of SJF. So, here at the end of every `second`, the code checks for new processes (if any) and updates the multiset in order to make the task with least burst time available to CPU.
+#### Characteristics of Shortest Remaining Time First:
+- SRTF algorithm speeds up the processing of jobs compared to SJF, assuming overhead charges are not considered.
+- Context switches occur more frequently in SRTF than in SJF, consuming CPU time, which can diminish its advantage of fast processing.
+
+#### Advantages of SRTF:
+- Short processes are handled very quickly in SRTF.
+- The system requires minimal overhead since decisions are made only when a process completes or a new process arrives.
+
+#### Disadvantages of SRTF:
+- Similar to SJF, SRTF has the potential for process starvation.
+- Long processes may be delayed indefinitely if short processes continually arrive.
+
+#### Explanation of Code:
+As it is already stated that this algorithm is just preemptive version of SJF. So, here at the end of every `second`, the code checks for new processes (if any) and updates the multiset in order to make the task with least burst time available to CPU.
 
 ```
 vector< vector<float>> SRTF(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
@@ -265,14 +298,21 @@ vector< vector<float>> SRTF(vector< pair<int, pair<float, float>>> processes, of
     return run;
 }
 ```
-### Round Robin (RR)
+### Round Robin
 
-The RR algorithm assigns a fixed time quantum for each process and cycles through the ready queue.
+Round Robin is a CPU scheduling algorithm where each process is cyclically assigned a fixed time slot. It is the preemptive version of the First Come First Serve CPU Scheduling algorithm and generally focuses on time-sharing techniques.
 
-- **Process Selection**: Processes are selected in a round-robin manner.
-- **Execution**: Each process runs for a maximum of the time quantum before the next process is selected.
-- **Output**: The Gantt chart and average waiting and turn-around times are calculated.
-- **Code Explanation**: The code of round robin algorithm has a quantum value of `2s` and it checks for new processes coming before or at the time of preemption (or complemetion), whichever is applicable, then moves the current process `(if burst time remains > 0)` to the end of the ready queue.
+#### Characteristics of Round Robin:
+- It’s simple, easy to use, and starvation-free as all processes get balanced CPU allocation.
+- One of the most widely used methods in CPU scheduling as a core.
+- It is considered preemptive as processes are given CPU time for a very limited duration.
+
+#### Advantages of Round Robin:
+- Round Robin is fair as every process gets an equal share of CPU time.
+- Newly created processes are added to the end of the ready queue.
+
+#### Explanation of Code:
+The code of round robin algorithm has a quantum value of `2s` and it checks for new processes coming before or at the time of preemption (or complemetion), whichever is applicable, then moves the current process `(if burst time remains > 0)` to the end of the ready queue.
 
 ```
 vector< vector<float>> RoundRobin(vector< pair<int, pair<float, float>>> processes, ofstream& outputFile){
